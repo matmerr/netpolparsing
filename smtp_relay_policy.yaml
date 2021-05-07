@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: smtp-relay
+  namespace: smtp
+spec:
+  ingress:
+  - ports:
+    - port: 25
+      protocol: TCP
+    - port: 53
+      protocol: TCP
+    - port: 53
+      protocol: UDP
+  - from:
+    - podSelector:
+        matchLabels:
+          app: testpod
+  podSelector:
+    matchLabels:
+      app: smtp-relay
+  policyTypes:
+  - Ingress

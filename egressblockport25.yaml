@@ -1,0 +1,62 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: foo-deny-egress
+spec:
+  egress:
+  - ports:
+    - port: 443
+      protocol: TCP
+    - port: 53
+      protocol: TCP
+    - port: 53
+      protocol: UDP
+    - port: 5432
+      protocol: TCP
+    - port: 1521
+      protocol: TCP
+    - port: 3306
+      protocol: TCP
+    - port: 5432
+      protocol: TCP
+  - ports:
+    - port: 8080
+      protocol: TCP
+    to:
+    - namespaceSelector:
+        matchLabels:
+          service: gauth
+      podSelector:
+        matchLabels:
+          service: gauth
+  - ports:
+    - port: 80
+      protocol: TCP
+    - port: 8080
+      protocol: TCP
+    to:
+    - namespaceSelector:
+        matchLabels:
+          service: gws
+  - to:
+    - podSelector:
+        matchLabels:
+          app: testpod
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: testpod
+  - ports:
+    - port: 8080
+      protocol: TCP
+    - port: 34952
+      protocol: TCP
+    - port: 8180
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: testpod
+  policyTypes:
+  - Ingress
+  - Egress
